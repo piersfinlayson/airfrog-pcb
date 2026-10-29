@@ -2,7 +2,7 @@
 
 All notable changes between versions are documented in this file.
 
-## v0.2.0
+## v0.2.0 - 2026-10-29
 
 Airfrog for One ROM Fire USB boards in ESP32-C3 and ESP32-S3 variants.
 
