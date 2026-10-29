@@ -1,0 +1,32 @@
+name: Check
+
+on:
+  push:
+    paths-ignore:
+      - README.md
+      - DEVELOPMENT.md
+      - LICENSE
+      - NOTICE
+      - 'images/**'
+  pull_request:
+    paths-ignore:
+      - README.md
+      - DEVELOPMENT.md
+      - LICENSE
+      - NOTICE
+      - 'images/**'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    container:
+      image: kicad/kicad:9.0.7
+      options: --user root
+    steps:
+      - name: Install Git and Poppler
+        run: apt-get update && apt-get install -y --no-install-recommends git poppler-utils
+      - uses: actions/checkout@v4
+      - name: Add the checkout to git's safe directories
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Check the design
+        run: scripts/check_all.sh build

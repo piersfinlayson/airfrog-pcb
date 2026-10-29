@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: kicad/kicad:9.0.7
+      options: --user root
+    steps:
+      - name: Install Git and Poppler
+        run: apt-get update && apt-get install -y --no-install-recommends git poppler-utils
+      - uses: actions/checkout@v4
+      - name: Add the checkout to git's safe directories
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Check the design
+        run: scripts/check_all.sh build
+      - name: Write the release files
+        run: scripts/release.sh "$GITHUB_REF_NAME" build/release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: build/release/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: release
+          path: build/release
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/changelog.py "$GITHUB_REF_NAME" > build/notes.md
+          gh release create "$GITHUB_REF_NAME" build/release/* --title "$GITHUB_REF_NAME" --notes-file build/notes.md

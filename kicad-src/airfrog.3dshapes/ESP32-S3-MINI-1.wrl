@@ -1,0 +1,21 @@
+#VRML V2.0 utf8
+Transform { translation 0.0000 -0.0197 0.1575 children Shape { appearance Appearance { material Material { diffuseColor 0.100 0.120 0.350 shininess 0.20 } } geometry Box { size 6.0630 8.0709 0.3150 } } }
+Transform { translation 0.0000 -0.9843 0.6299 children Shape { appearance Appearance { material Material { diffuseColor 0.600 0.610 0.630 specularColor 0.500 0.500 0.500 shininess 0.40 } } geometry Box { size 5.7480 5.7874 0.6299 } } }
+Transform { translation -1.9685 3.0610 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.1378 1.3386 0.0118 } } }
+Transform { translation -1.7224 3.6614 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.6299 0.1378 0.0118 } } }
+Transform { translation -1.4764 3.0610 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.1378 1.3386 0.0118 } } }
+Transform { translation -1.2303 2.4606 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.6299 0.1378 0.0118 } } }
+Transform { translation -0.9843 3.0610 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.1378 1.3386 0.0118 } } }
+Transform { translation -0.7382 3.6614 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.6299 0.1378 0.0118 } } }
+Transform { translation -0.4921 3.0610 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.1378 1.3386 0.0118 } } }
+Transform { translation -0.2461 2.4606 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.6299 0.1378 0.0118 } } }
+Transform { translation 0.0000 3.0610 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.1378 1.3386 0.0118 } } }
+Transform { translation 0.2461 3.6614 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.6299 0.1378 0.0118 } } }
+Transform { translation 0.4921 3.0610 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.1378 1.3386 0.0118 } } }
+Transform { translation 0.7382 2.4606 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.6299 0.1378 0.0118 } } }
+Transform { translation 0.9843 3.0610 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.1378 1.3386 0.0118 } } }
+Transform { translation 1.2303 3.6614 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.6299 0.1378 0.0118 } } }
+Transform { translation 1.4764 3.0610 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.1378 1.3386 0.0118 } } }
+Transform { translation 1.7224 2.4606 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.6299 0.1378 0.0118 } } }
+Transform { translation 1.9685 3.0610 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.1378 1.3386 0.0118 } } }
+Transform { translation -1.9685 2.2638 0.3209 children Shape { appearance Appearance { material Material { diffuseColor 0.850 0.650 0.200 shininess 0.20 } } geometry Box { size 0.1378 0.5315 0.0118 } } }

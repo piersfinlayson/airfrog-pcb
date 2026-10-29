@@ -1,0 +1,4 @@
+#!/bin/sh
+# Run a script with a Python that has KiCad's pcbnew module.
+. "$(dirname "$0")/kicad.sh"
+exec "$PY" "$@"
