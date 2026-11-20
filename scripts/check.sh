@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 D=${1:-build}
 . scripts/kicad.sh
 status=0
-for V in ${VARIANTS:-c3 s3}; do
+for V in ${VARIANTS:-mini pro}; do
     P=airfrog-$V
     O=$D/$V
     mkdir -p "$O"

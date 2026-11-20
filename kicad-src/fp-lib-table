@@ -1,3 +1,4 @@
 (fp_lib_table
   (version 7)
+  (lib (name "airfrog")(type "KiCad")(uri "${KIPRJMOD}/airfrog.pretty")(options "")(descr "Project footprints"))
 )

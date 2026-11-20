@@ -1,6 +1,6 @@
 """Summarise a kicad-cli DRC JSON report. Exits 1 if it has a violation, unconnected item or parity problem, other than
-footprints differing from their library copies: the PCB generator cuts footprint silkscreen at the board edge and at
-vias, and changes J2's pads and courtyard."""
+footprints differing from their library copies: the boards' footprints have their own silkscreen, and J2 has smaller
+pads and courtyard."""
 import json
 import sys
 from collections import Counter

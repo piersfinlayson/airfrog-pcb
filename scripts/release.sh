@@ -13,7 +13,7 @@ fi
 python3 scripts/changelog.py "$T" >/dev/null
 scripts/generate.sh
 mkdir -p "$D"
-for M in c3 s3; do
+for M in mini pro; do
     P=airfrog-$M
     cp jlc/$M/$P-gerbers.zip jlc/$M/$P-bom.csv jlc/$M/$P-cpl.csv jlc/$M/$P-socket-bom.csv jlc/$M/$P-socket-cpl.csv \
         kicad/$M/$P-schematic.pdf "$D/"

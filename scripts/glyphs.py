@@ -1,13 +1,21 @@
-"""Write the outlines of some characters of a TrueType font to JSON, for silkscreen text drawn as polygons.
+"""Write the outlines of some characters of a TrueType font to JSON, and draw text from the JSON onto a board as
+silkscreen polygons, so KiCad, CI and JLC never need the font installed.
 
-The board is generated from the JSON, so the font itself isn't needed to build it, and KiCad, CI and JLC never need
-it installed. Usage: glyphs.py <font.ttf> <characters> <out.json>
+Usage:
+  glyphs.py <font.ttf> <characters> <out.json>
+  glyphs.py draw <board.kicad_pcb> <text> <x> <baseline> [size]   (with KiCad's Python)
 
 Each character has its advance and its contours, in units of the font's em, y up. Curves are flattened to lines.
 """
 import json
+import os
 import struct
 import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the project folder, above scripts/
+OUTLINES = os.path.join(ROOT, 'kicad-src', 'bauhaus93.json')
+NAME_SIZE = 2.6                  # the name's height, in mm
+PAGE = 100.0                     # the board's top left corner on the KiCad page, in mm
 
 
 class Font:
@@ -175,5 +183,53 @@ def main(path, chars, out):
     json.dump({'source': path.rsplit('/', 1)[-1], 'glyphs': glyphs}, open(out, 'w'), indent=0)
 
 
+def point_in(p, poly):
+    """True if point p is inside polygon poly."""
+    x, y = p
+    inside = False
+    for (x0, y0), (x1, y1) in zip(poly, poly[1:] + poly[:1]):
+        if (y0 > y) != (y1 > y) and x < x0 + (y - y0) * (x1 - x0) / (y1 - y0):
+            inside = not inside
+    return inside
+
+
+def draw(board, s, cx, baseline, size=NAME_SIZE):
+    """Draw s from the outlines as filled bottom silkscreen on board, read from below, centred on x cx with its
+    baseline at baseline, both in mm from the board's top left."""
+    import pcbnew
+    glyphs = json.load(open(OUTLINES))['glyphs']
+    width = sum(glyphs[c]['advance'] for c in s) * size
+    x = cx + width / 2        # mirrored: the first character is on the right, seen from the top
+    outer, holes = pcbnew.SHAPE_POLY_SET(), pcbnew.SHAPE_POLY_SET()
+    for c in s:
+        contours = glyphs[c]['contours']
+        for n, contour in enumerate(contours):
+            # a contour inside another of the same character is a hole, as in the 'o'
+            inside = any(m != n and point_in(contour[0], other) for m, other in enumerate(contours))
+            target = holes if inside else outer
+            target.NewOutline()
+            for gx, gy in contour:
+                target.Append(pcbnew.FromMM(PAGE + x - gx * size), pcbnew.FromMM(PAGE + baseline - gy * size))
+        x -= glyphs[c]['advance'] * size
+    outer.BooleanSubtract(holes)
+    # a board polygon is saved with one outline and no holes, so the holes are cut in to each outline's edge
+    outer.Fracture()
+    for i in range(outer.OutlineCount()):
+        one = pcbnew.SHAPE_POLY_SET()
+        one.AddOutline(outer.Outline(i))
+        shape = pcbnew.PCB_SHAPE(board, pcbnew.SHAPE_T_POLY)
+        shape.SetPolyShape(one)
+        shape.SetFilled(True)
+        shape.SetWidth(0)
+        shape.SetLayer(pcbnew.B_SilkS)
+        board.Add(shape)
+
+
 if __name__ == '__main__':
-    main(*sys.argv[1:4])
+    if sys.argv[1] == 'draw':
+        import pcbnew
+        b = pcbnew.LoadBoard(sys.argv[2])
+        draw(b, sys.argv[3], float(sys.argv[4]), float(sys.argv[5]), *map(float, sys.argv[6:7]))
+        b.Save(sys.argv[2])
+    else:
+        main(*sys.argv[1:4])

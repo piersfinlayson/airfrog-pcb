@@ -1,4 +1,4 @@
-"""Generate the Airfrog schematic for one ESP32 module variant, c3 or s3. Layout units are U = 2.54 mm."""
+"""Generate the Airfrog schematic for one ESP32 module variant, mini or pro. Layout units are U = 2.54 mm."""
 import os
 import subprocess
 import sys
@@ -15,6 +15,8 @@ PASSIVES = {
     '1uF': ('Capacitor_SMD:C_0402_1005Metric', 'C52923', 'Samsung Electro-Mechanics CL05A105KA5NQNC'),
     '4.7uF': ('Capacitor_SMD:C_0402_1005Metric', 'C23733', 'Samsung Electro-Mechanics CL05A475MP5NRNC'),
     '10uF': ('Capacitor_SMD:C_0603_1608Metric', 'C19702', 'Samsung Electro-Mechanics CL10A106KP8NNNC'),
+    '330R': ('Resistor_SMD:R_0402_1005Metric', 'C25104', 'UNI-ROYAL(Uniroyal Elec) 0402WGF3300TCE'),
+    '1K': ('Resistor_SMD:R_0402_1005Metric', 'C11702', 'UNI-ROYAL(Uniroyal Elec) 0402WGF1001TCE'),
     '2K2': ('Resistor_SMD:R_0402_1005Metric', 'C25879', 'UNI-ROYAL(Uniroyal Elec) 0402WGF2201TCE'),
     '4K7': ('Resistor_SMD:R_0402_1005Metric', 'C25900', 'UNI-ROYAL(Uniroyal Elec) 0402WGF4701TCE'),
     '10K': ('Resistor_SMD:R_0402_1005Metric', 'C25744', 'UNI-ROYAL(Uniroyal Elec) 0402WGF1002TCE'),
@@ -27,20 +29,22 @@ ALTS = {}
 # and no high glitch at power-up, so the MOSFETs stay off until the firmware drives them. The One ROM signals are
 # on the module edge that faces the header on the PCB.
 VARIANTS = {
-    'c3': {
+    'mini': {
         'lib_id': LIB + ':ESP32-C3-MINI-1', 'value': 'ESP32-C3-MINI-1',
         'props': {'LCSC': 'C41349510', 'LCSC alt': 'C2838502', 'Comment': 'Espressif ESP32-C3-MINI-1-H4X'},
         'pins': {'EN': 8, 'BOOT': 23, 'TXD0': 31, 'RXD0': 30, 'RUN_DRV': 21, 'BOOTSEL_DRV': 18,
-                 'SWCLK_ESP': 20, 'SWDIO_ESP': 19, 'SEL_A': 12, 'SEL_B': 13, 'RECOVERY': 16, 'IO2': 5, 'IO8': 22},
-        'nc': [6, 26, 27],
-        'straps': ['IO2', 'IO8'],   # floating at reset, pulled up for SPI and download boot
+                 'SWCLK_ESP': 20, 'SWDIO_ESP': 19, 'SEL_A': 12, 'SEL_B': 13, 'RECOVERY': 16, 'LED': 5, 'RGB': 22,
+                 'J1_7': 6, 'J1_9': 26},
+        'nc': [27],
+        'straps': ['LED', 'RGB'],   # IO2 and IO8, floating at reset, pulled up for SPI and download boot
     },
-    's3': {
+    'pro': {
         'lib_id': 'RF_Module:ESP32-S3-MINI-1', 'value': 'ESP32-S3-MINI-1',
         'props': {'LCSC': 'C3013941', 'Comment': 'Espressif ESP32-S3-MINI-1-N4R2'},
         'pins': {'EN': 45, 'BOOT': 4, 'TXD0': 39, 'RXD0': 40, 'RUN_DRV': 25, 'BOOTSEL_DRV': 20,
-                 'SWCLK_ESP': 19, 'SWDIO_ESP': 21, 'SEL_A': 17, 'SEL_B': 18, 'RECOVERY': 16},
-        'nc': list(range(5, 16)) + [22, 23, 24] + list(range(26, 39)) + [41, 44],
+                 'SWCLK_ESP': 19, 'SWDIO_ESP': 21, 'SEL_A': 17, 'SEL_B': 18, 'RECOVERY': 16, 'LED': 15, 'RGB': 30,
+                 'J1_7': 27, 'J1_9': 22},
+        'nc': list(range(5, 15)) + [23, 24, 26, 28, 29] + list(range(31, 39)) + [41, 44],
         'straps': [],
     },
 }
@@ -49,6 +53,8 @@ Q_FET = {'LCSC': 'C5190214', 'Comment': 'Guangdong Hottech 2N7002DW', 'Footprint
 Q_BJT = {'LCSC': 'C41375125', 'Comment': 'hongjiacheng MMDT3904'}
 DIODE = {'LCSC': 'C7502694', 'Comment': 'hongjiacheng BAT54WS', 'Footprint': 'Diode_SMD:D_SOD-323'}
 BUTTON = {'LCSC': 'C720477', 'Comment': 'XUNPU TS-1088-AR02016', 'Footprint': 'Button_Switch_SMD:SW_SPST_TS-1088-xR020'}
+LED = {'LCSC': 'C22355736', 'Comment': 'XINGLIGHT XL-1005UBC', 'Footprint': 'LED_SMD:LED_0402_1005Metric'}
+RGB = {'LCSC': 'C5349953', 'Comment': 'XINGLIGHT XL-1010RGBC-WS2812B'}
 
 
 def commit_date():
@@ -58,7 +64,7 @@ def commit_date():
     return r.stdout.strip() if r.returncode == 0 else ''
 
 
-VARIANT = sys.argv[1] if len(sys.argv) > 1 else 'c3'
+VARIANT = sys.argv[1] if len(sys.argv) > 1 else 'mini'
 V = VARIANTS[VARIANT]
 PROJECT = 'airfrog-' + VARIANT
 
@@ -126,7 +132,7 @@ def module(ox, oy):
     W((cx, vdd[1] / U), (cx, oy + 5), (cx + 13, oy + 5))
     s.power('+3V3', P(cx + 5, oy + 5))
     vpassive('C4', '0.1uF', cx + 13, oy + 5)
-    if VARIANT == 'c3':
+    if VARIANT == 'mini':
         vpassive('C5', '10uF', cx + 9, oy + 5)
     else:
         for i, line in enumerate(("No 10uF as there isn't sufficient space.", 'The ESP32 module contains 10uF.')):
@@ -182,10 +188,17 @@ def onerom(ox, oy):
                      'LCSC': 'C2897406', 'Comment': 'HCTL PM254-2-05-Z-8.5'})
     # J1 is on the underside, so its odd pins are on row 2, the row further from One ROM's edge
     s.pin_power(j, 2, '+5V', length=U)
-    for pin in (1, 7, 9):
-        s.pin_power(j, pin, 'GND', length=U)
+    s.pin_power(j, 1, 'GND', length=U)
     for pin, net in ((3, 'SWDIO'), (4, 'RUN'), (5, 'SWCLK'), (6, 'BOOTSEL'), (8, 'SEL_B'), (10, 'SEL_A')):
         s.pin_label(j, pin, net)
+    # J1-7 and J1-9 are GND on One ROM, so 1K limits the current if the ESP32 drives one high there
+    # the resistors are staggered so their labels clear each other and SWCLK
+    for pin, ref, dx, fields in ((7, 'R17', 8, 'above1'), (9, 'R18', 3, 'below1')):
+        x, y = (v / U for v in j.pin(pin))
+        W((x, y), (x - dx + 1, y))
+        passive(ref, '1K', x - dx, y, rot=90, fields=fields)
+        W((x - dx - 1, y), (x - 10, y))
+        s.label('J1_%d' % pin, P(x - 10, y), 180)
 
 
 # ------------------------------------------------------------ RUN and BOOTSEL drive
@@ -265,6 +278,36 @@ def header(ox, oy):
     s.text('SEL_C', P(ox + 16, oy + 7))
 
 
+# ------------------------------------------------------------ status and RGB LEDs
+
+def leds(ox, oy):
+    block(ox, oy, ox + 31, oy + 12, 'Status and RGB LEDs')
+    # blue status LED, on while the ESP32 drives LED low
+    x, y = ox + 3, oy + 4
+    d = s.add('Device:LED_Small', 'D3', 'Blue', P(x, y + 1), rot=90, props=dict(LED),
+              fields=fields_at((x + 1, y + 0.5), (x + 1, y + 1.5)))
+    s.pin_power(d, 2, '+3V3')
+    vpassive('R14', '330R', x, y + 2, bottom=None, fields=fields_at((x + 1, y + 2.5), (x + 1, y + 3.5)))
+    W((x, y + 4), (x + 3, y + 4))
+    s.label('LED', P(x + 3, y + 4), 0)
+    # RGB LED, with DOUT on a pad for more LEDs in a chain
+    cx, cy = ox + 20, oy + 7
+    s.need('airfrog:XL-1010RGBC-WS2812B', path=os.path.join(SRC, LIB + '.kicad_sym'))
+    d = s.add('airfrog:XL-1010RGBC-WS2812B', 'D4', 'RGB', P(cx, cy), props=dict(RGB),
+              fields=fields_at((cx + 2.5, cy - 3), (cx + 2.5, cy - 2)))
+    s.pin_power(d, 2, '+5V')
+    s.pin_power(d, 3, 'GND')
+    W((cx - 3, cy), (cx - 4, cy))
+    passive('R15', '1K', cx - 5, cy, rot=90, fields='below1')
+    W((cx - 6, cy), (cx - 8, cy))
+    s.label('RGB', P(cx - 8, cy), 180)
+    W((cx + 3, cy), (cx + 8, cy))
+    s.add('Connector:TestPoint', 'TP1', 'DOUT', P(cx + 8, cy), in_bom=False,
+          props={'Footprint': 'TestPoint:TestPoint_Pad_D1.5mm'},
+          fields=fields_at((cx + 8.5, cy - 2), (cx + 8.5, cy - 1)))
+    vpassive('C6', '0.1uF', cx - 3, oy + 2, top='+5V', fields=fields_at((cx - 4, oy + 2.5), (cx - 4, oy + 3.5), just='right'))
+
+
 # ------------------------------------------------------------ recovery button
 
 def recovery(ox, oy):
@@ -288,6 +331,7 @@ swd(45, 44)
 header(45, 61.5)
 boot(81, 5)
 autoprog(81, 32)
+leds(81, 53)
 
 if __name__ == '__main__':
     out = sys.argv[2] if len(sys.argv) > 2 else os.path.join(ROOT, 'build', VARIANT)

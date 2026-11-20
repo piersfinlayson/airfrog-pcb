@@ -2,6 +2,14 @@
 
 All notable changes between versions are documented in this file.
 
+## v0.2.1
+
+- The boards are renamed Mini (ESP32-C3) and Pro (ESP32-S3).
+- Both boards include a blue status LED and RGB LED.
+- J1-7 and J1-9 connect to the ESP32 GPIOs through 1K resistors.
+- Both boards are routed by hand.
+- Images use blue solder mask.
+
 ## v0.2.0 - 2026-10-29
 
 Airfrog for One ROM Fire USB boards in ESP32-C3 and ESP32-S3 variants.

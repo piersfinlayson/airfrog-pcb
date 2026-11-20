@@ -2,9 +2,9 @@
 
 Airfrog is a tiny WiFi Hat that adds wireless networking to [One ROM](https://onerom.org).
 
-| ESP32-C3 | ESP32-S3 |
+| Mini (ESP32-C3) | Pro (ESP32-S3) |
 | :---: | :---: |
-| <img src="images/airfrog-c3-top.png" alt="Airfrog with an ESP32-C3" width="360"> | <img src="images/airfrog-s3-top.png" alt="Airfrog with an ESP32-S3" width="360"> |
+| <img src="images/airfrog-mini-top.png" alt="Airfrog Mini" width="360"> | <img src="images/airfrog-pro-top.png" alt="Airfrog Pro" width="360"> |
 
 <em>Currently untested - order at your own risk.</em>
 
@@ -14,31 +14,33 @@ Download the fab files, KiCad project and schematic PDF for each version from [R
 
 ## Ordering
 
-To have JLCPCB make and assemble the C3 board, upload the gerbers `airfrog-c3-gerbers.zip` and choose:
+To have JLCPCB make and assemble the Mini, upload the gerbers `airfrog-mini-gerbers.zip` and choose:
 
+- HASL or ENIG finish
 - 4 layers, 1.6 mm thick
 - layer stackup JLC04161H-7628
 - PCB assembly
+- your choice of solder mask colour (the official Airfrog board colour is blue)
 
 Then upload a BOM and CPL:
 
-- top side only soldering socket J1 by hand: `airfrog-c3-bom.csv` and `airfrog-c3-cpl.csv`
-- both sides, with J1 fitted by JLCPCB: `airfrog-c3-socket-bom.csv` and `airfrog-c3-socket-cpl.csv`
+- top side only soldering socket J1 by hand: `airfrog-mini-bom.csv` and `airfrog-mini-cpl.csv`
+- both sides, with J1 fitted by JLCPCB: `airfrog-mini-socket-bom.csv` and `airfrog-mini-socket-cpl.csv`
 
 Check the parts' positions in JLCPCB's preview before you place the order.
 
-For the S3 board replace `c3` with `s3` in the filenames.
+For the Pro replace `mini` with `pro` in the filenames.
 
 ## Design
 
 Schematics:
 
-- [C3 (PDF)](../../releases/latest/download/airfrog-c3-schematic.pdf)
-- [S3 (PDF)](../../releases/latest/download/airfrog-s3-schematic.pdf)
+- [Mini (PDF)](../../releases/latest/download/airfrog-mini-schematic.pdf)
+- [Pro (PDF)](../../releases/latest/download/airfrog-pro-schematic.pdf)
 
 ## Developing
 
-All KiCad and fab files are auto-generated from scripts and configuration.
+The schematics and fab files are generated from scripts. The PCBs are routed by hand in KiCad.
 
 To modify or extend this design start with [DEVELOPMENT.md](DEVELOPMENT.md).
 

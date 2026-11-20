@@ -10,3 +10,7 @@ fp-info-cache
 ~*.lck
 _autosave-*
 \#auto_saved_files\#
+# the hand-routed boards' folders: only the board and project file are committed
+/pcb/*/*
+!/pcb/*/*.kicad_pcb
+!/pcb/*/*.kicad_pro

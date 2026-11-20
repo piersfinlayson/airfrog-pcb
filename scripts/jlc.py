@@ -1,4 +1,4 @@
-"""Write JLCPCB fabrication and assembly files for one variant's board, c3 or s3: zipped Gerbers and drill files,
+"""Write JLCPCB fabrication and assembly files for one variant's board, mini or pro: zipped Gerbers and drill files,
 and two sets of BOM and CPL. The plain set has the top-side parts only, for single-sided assembly, with J1 fitted
 by hand. The -socket set adds J1 on the bottom, for double-sided assembly. Run with KiCad's bundled Python. DNP
 parts and parts excluded from the BOM or position files are left out. The silkscreen's ${COMMIT} is set to the short

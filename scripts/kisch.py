@@ -230,7 +230,7 @@ PASSIVE_LIBS = ('Device:R_Small', 'Device:C_Small', 'Device:C_Polarized_Small')
 
 class Part:
     def __init__(self, sch, lib_id, ref, value, at, rot=0, mirror=None, props=None, fields=None,
-                 hide_value=False, dnp=False, unit=1):
+                 hide_value=False, dnp=False, unit=1, in_bom=True):
         self.sch, self.lib_id, self.ref, self.value = sch, lib_id, ref, value
         self.x, self.y = at
         self.rot, self.mirror = rot, mirror
@@ -241,6 +241,7 @@ class Part:
         self.is_power = bool(find(self.sym, 'power'))
         self.hide_value = hide_value
         self.dnp = dnp
+        self.in_bom = in_bom and not self.is_power
         self.fields = fields
         self.uuid = uid('symbol/' + ref + ('/%d' % unit if unit > 1 else ''))
 
@@ -365,7 +366,7 @@ class Part:
         node = ['symbol', ['lib_id', q(self.lib_id)], ['at', f(self.x), f(self.y), str(self.rot)]]
         if self.mirror:
             node.append(['mirror', self.mirror])
-        node += [['unit', str(self.unit)], ['exclude_from_sim', 'no'], ['in_bom', 'no' if self.is_power else 'yes'],
+        node += [['unit', str(self.unit)], ['exclude_from_sim', 'no'], ['in_bom', 'yes' if self.in_bom else 'no'],
                  ['on_board', 'no' if self.is_power else 'yes'], ['dnp', 'yes' if self.dnp else 'no'], ['uuid', q(self.uuid)]]
         layout = self.field_layout()
         # field angle that keeps text horizontal, and whether KiCad mirrors justification for it
