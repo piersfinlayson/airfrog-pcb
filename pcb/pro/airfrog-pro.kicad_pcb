@@ -150,7 +150,6 @@
 			(outputdirectory "")
 		)
 	)
-	(property "COMMIT" "0000000")
 	(net 0 "")
 	(net 1 "+3V3")
 	(net 2 "+5V")
