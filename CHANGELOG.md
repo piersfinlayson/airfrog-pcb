@@ -2,7 +2,7 @@
 
 All notable changes between versions are documented in this file.
 
-## v0.2.1
+## v0.2.1 - 2026-11-20
 
 - The boards are renamed Mini (ESP32-C3) and Pro (ESP32-S3).
 - Both boards include a blue status LED and RGB LED.
