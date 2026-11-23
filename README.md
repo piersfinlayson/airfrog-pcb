@@ -1,6 +1,8 @@
 # airfrog-pcb
 
-Airfrog is a tiny WiFi Hat that adds wireless networking to [One ROM](https://onerom.org).
+Airfrog is a tiny WiFi co-processor for microcontrollers, adding wireless networking, programming and management.
+
+Amongst other devices, Airfrog supports [One ROM](https://onerom.org).
 
 | Mini (ESP32-C3) | Pro (ESP32-S3) |
 | :---: | :---: |
